@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  api:
+    build: .
+    container_name: micro_finance_api
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./app:/app/app # Syncs local code edits to the container
+    envioronment:
+      - DATABASE_URL=postgresql://finance_user:admin123@db:5432/finance_db # this needs to be changed(dummy data)
+    depends_on:
+      - db
+  db:
+    image: postgres:15-alpine
+    container_name:  finance_postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: finance_user
+      POSTGRES_PASSWORD: admin123
+      POSTGRES_DB: finance_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+volumes:
+  postgres_data: # Ensures database records persist if the container is stopped or restarted
